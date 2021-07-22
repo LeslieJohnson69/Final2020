@@ -2,11 +2,12 @@
 title: "Covid91 vaccine study Final2021"
 author: "Leslie Johnson"
 date: "Summer 2021"
-output: 
-  html_document:
-    numbers_section true:
-    toc: true
+output:
+   html_document:
+         toc: true
+         toc_depth: 5
 ---
+
 
 ```{r include=FALSE,echo=FALSE}
 require(tidyverse)
