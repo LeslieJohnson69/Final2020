@@ -3,9 +3,9 @@ title: "Covid91 vaccine study Final2021"
 author: "Leslie Johnson"
 date: "Summer 2021"
 output: 
-    html_document:
+  html_document:
+    numbers_section true:
     toc: true
-    toc_depth: 5
 ---
 
 ```{r include=FALSE,echo=FALSE}
@@ -19,10 +19,17 @@ FinalData$treatment <- as.factor(FinalData$treatment)
 FinalData$sex <- as.factor(FinalData$sex)
 FinalData$infected <- as.factor(FinalData$infected)
 FinalData$LGBTQ <- as.factor(FinalData$LGBTQ)
-FinalData$DrugUser <- as.factor(FinalData$)
+FinalData$DrugUser <- as.factor(FinalData$DrugUser)
 ```
 
 # Introduction
 
 A new  preventative vaccine (covid91) is under test in clinical trials. Given the nature of this vaccine it is suspected that the drug may exhibit different effectiveness across the variety of subpopulations tracked. Consider population subgroups by gender( guys and gals), drug use, and sexual orientation. Write a complete report that separately considers this drug for each subgroup and your recommendations as to whether people in the subgroup should take the vaccine. Structure your report in four sections each devoted to one of the four subgroups, use null and alternative hypothesis statements and correct statistical verbage when referencing p-values in conclusions.
+
+
+
+```{r}
+barchartGC(~infected + treatment, data=FinalData)
+barchartGC(~infected + treatment, data=FinalData, type='percent')
+```
 
