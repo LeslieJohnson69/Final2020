@@ -16,30 +16,33 @@ require(forcats)
 OldData <-read.csv(file="covid91.csv",header=TRUE)
 #recode to remove the annoying "X" from the dataframe
 FinalData <- OldData %>% mutate(infected = recode(infected, aids = "covid", none = "OK" )) %>% select(-one_of("X"))
-FinalData <- FinalData %>%
-mutate(across(where(is.character), as.factor))
-guy = filter(FinalData, sex =="guy")
-gal = filter(FinalData, sex =="gal")
-gay = filter(FinalData, LGBTQ =="gay")
-Druguser = filter(FinalData, DrugUser =="yes")
+FinalData= select(FinalData, ! is.numeric)
+FinalData=purrr::map(FinalData, as.factor)
+FinalData = data.frame(FinalData)
 ```
 
 # Introduction
 
 A new  preventative vaccine (covid91) is under test in clinical trials. Given the nature of this vaccine it is suspected that the drug may exhibit different effectiveness across the variety of subpopulations tracked. Consider population subgroups by gender( guys and gals), drug use, and sexual orientation. Write a complete report that separately considers this drug for each subgroup and your recommendations as to whether people in the subgroup should take the vaccine. Structure your report in four sections each devoted to one of the four subgroups, use null and alternative hypothesis statements and correct statistical verbage when referencing p-values in conclusions.
 
+### Coding Details
 
 ```{r}
 barchartGC(~infected + treatment, data=FinalData)
-barchartGC(~infected + treatment, data=FinalData, type='percent')
+barchartGC(~infected + treatment,data=FinalData, type="percent")
+
+```
+
+```{r}
+table1 <- xtabs(~treatment + infected, data=FinalData)
+table2 <- xtabs(~infected + treatment,data=FinalData)
+rowPerc(table1)
+colPerc(table1)
 ```
 
 # Guys
 
-```{r}
-barchartGC(~sex + treatment, data=FinalData)
-barchartGC(~sex + treatment, data=FinalData, type='percent')
-```
+### barplot
 
 ## Numerical Results
 
@@ -51,10 +54,10 @@ barchartGC(~sex + treatment, data=FinalData, type='percent')
 
 # Gal
 
-```{r}
-barchartGC(~sex + treatment, data=FinalData)
-barchartGC(~sex + treatment, data=FinalData, type='percent')
-```
+### barplot
+
+
+
 
 ## Numerical Results
 
@@ -64,6 +67,8 @@ barchartGC(~sex + treatment, data=FinalData, type='percent')
 
 
 # Gay Sexual Oreintation
+
+### barplot
 
 
 ## Numerical Results
@@ -75,6 +80,8 @@ barchartGC(~sex + treatment, data=FinalData, type='percent')
 
 
 # Drug Users
+
+### barplot
 
 
 ## Numerical Results
