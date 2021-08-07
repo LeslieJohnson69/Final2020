@@ -16,10 +16,21 @@ require(forcats)
 OldData <-read.csv(file="covid91.csv",header=TRUE)
 #recode to remove the annoying "X" from the dataframe
 FinalData <- OldData %>% mutate(infected = recode(infected, aids = "covid", none = "OK" )) %>% select(-one_of("X"))
-FinalData= select(FinalData, ! is.numeric)
-FinalData=purrr::map(FinalData, as.factor)
-FinalData = data.frame(FinalData)
+FinalData <- FinalData %>%
+mutate(across(where(is.character),as.factor))
+FinalData$treatment <-relevel(FinalData$treatment,ref = "placebo")
+#FinalData$infected <- relevel(FinalData$infected,ref="OK")
+
 ```
+
+```{r}
+guy = filter(FinalData, sex =="guy")
+gal = filter(FinalData, sex == "gal")
+gay =filter(FinalData, LGBTQ == "gay")
+Druguser = filter(FinalData,DrugUser =="yes")
+
+```
+
 
 # Introduction
 
@@ -27,42 +38,128 @@ A new  preventative vaccine (covid91) is under test in clinical trials. Given th
 
 ### Coding Details
 
-```{r}
-barchartGC(~infected + treatment, data=FinalData)
-barchartGC(~infected + treatment,data=FinalData, type="percent")
-
-```
-
-```{r}
-table1 <- xtabs(~treatment + infected, data=FinalData)
-table2 <- xtabs(~infected + treatment,data=FinalData)
-rowPerc(table1)
-colPerc(table1)
-```
+The variables from FinalData needs to be changed from the character variables into factor variables. Subgroups had to be separated into categories, Guys, Gals, Gays, and Drugusers to see which groups would take the COVID-19 vaccine.
 
 # Guys
 
 ### barplot
 
-## Numerical Results
+```{r}
+dd2<- guy %>% group_by(infected,treatment) %>% summarize(count=n())%>% 
+mutate(prcnt=count/sum(count))
+
+# the group_by followed by summarize(count=n())
+
+basicC <- ggplot(dd2,aes(x=infected,y=count,fill=treatment))
+basicC + geom_bar(stat="identity", position = "dodge")
+
+# Now for percentage  plot
+
+basicC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment))
+basicC + geom_bar(stat = "identity",position = "dodge")
+```
 
 
+### Numerical results
 
-## Inferential Results
+```{r}
+table1 <- xtabs(~infected + treatment, data=guy)
+table2 <- xtabs(~infected + treatment, data = guy)
+rowPerc(table1)
+colPerc(table1)
+```
 
+
+### Inferential results
+
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+guysfish <- fisher.test(table1)
+guysfish
+```
+
+```{r}
+effect <- guysfish$p.value/(guysfish$p.value +1)
+effectivenessguy = guysfish$estimate/(guysfish$estimate+1)
+print(effectivenessguy*100)
+```
+
+```{r}
+low=(guysfish$conf.int[1]/(guysfish$conf.int[1] +1))*100
+hi=(guysfish$conf.int[2]/(guysfish$conf.int[2] +1))*100
+options
+(digits = 2)
+```
+
+```{r}
+guysfish <- fisher.test(table1)
+guysfish
+```
+
+## Effectiveness Confidence Interval `r low` to `r hi`
 
 
 # Gal
 
 ### barplot
 
+```{r}
+dd2<- gal %>% group_by(infected,treatment) %>% summarize(count=n())%>% 
+mutate(prcnt=count/sum(count))
+
+# the group_by followed by summerize(count=n())
+
+basicC <- ggplot(dd2,aes(x=infected,y=count,fill=treatment))
+basicC + geom_bar(stat="identity", position = "dodge")
+
+# Now for percentage  plot
+
+basicC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment))
+basicC + geom_bar(stat = "identity",position = "dodge")
 
 
+```
 
-## Numerical Results
+### Numerical Results
+
+```{r}
+table1 <- xtabs(~infected + treatment, data=gal)
+table2 <- xtabs(~infected + treatment, data=gal)
+rowPerc(table1)
+colPerc(table1)
+```
 
 
-## Inferential Results
+## Inferential  
+
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+galsfish <- fisher.test(table1)
+galsfish
+```
+
+
+```{r}
+effect <- galsfish$p.value/(galsfish$p.value +1)
+effectivenessgal = galsfish$estimate/(galsfish$estimate+1)
+print(effectivenessgal*100)
+```
+
+```{r}
+low=(galsfish$conf.int[1]/(galsfish$conf.int[1] +1))*100
+hi=(galsfish$conf.int[2]/(galsfish$conf.int[2] +1))*100
+options
+(digits = 2)
+```
+
+```{r}
+galsfish <- fisher.test(table1)
+galsfish
+```
+
+## Effectiveness Confidence Interval `r low` to `r hi`
 
 
 
@@ -70,26 +167,128 @@ colPerc(table1)
 
 ### barplot
 
+```{r}
+dd2<- gay %>% group_by(infected,treatment) %>% summarize(count=n())%>% 
+mutate(prcnt=count/sum(count))
 
-## Numerical Results
+# the group_by followed by summarize(count=n())
+
+basicC <- ggplot(dd2,aes(x=infected,y=count,fill=treatment))
+basicC + geom_bar(stat="identity", position = "dodge")
+
+# Now for percentage  plot
+
+basicC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment))
+basicC + geom_bar(stat = "identity",position = "dodge")
+
+```
 
 
+### Numerical Results
 
-## Inferential Results
+```{r}
+table1 <- xtabs(~infected + treatment, data=gay)
+table2 <- xtabs(~infected + treatment, data=gay)
+rowPerc(table1)
+colPerc(table1)
+```
 
+
+### Inferential Results
+
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+gaysfish <- fisher.test(table1)
+gaysfish
+```
+
+
+```{r}
+effect <- gaysfish$p.value/(gaysfish$p.value +1)
+effectivenessgay = gaysfish$estimate/(gaysfish$estimate+1)
+print(effectivenessgay*100)
+```
+
+```{r}
+low=(gaysfish$conf.int[1]/(gaysfish$conf.int[1] +1))*100
+hi=(gaysfish$conf.int[2]/(gaysfish$conf.int[2] +1))*100
+options
+(digits = 2)
+```
+
+```{r}
+gaysfish <- fisher.test(table1)
+gaysfish
+```
+
+## Effectiveness Confidence Interval `r low` to `r hi`
 
 
 # Drug Users
 
 ### barplot
 
+```{r}
+dd2<- Druguser %>% group_by(infected,treatment) %>% summarize(count=n())%>% 
+mutate(prcnt=count/sum(count))
 
-## Numerical Results
+# the group_by followed by summerize(count=n())
+
+basicC <- ggplot(dd2,aes(x=infected,y=count,fill=treatment))
+basicC + geom_bar(stat="identity", position = "dodge")
+
+# Now for percentage  plot
+
+basicC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment))
+basicC + geom_bar(stat = "identity",position = "dodge")
+
+
+```
+
+
+### Numerical Results
+
+```{r}
+table1 <- xtabs(~infected + treatment, data=Druguser)
+table2 <- xtabs(~infected + treatment, data=Druguser)
+rowPerc(table1)
+colPerc(table1)
+```
+
+### Inferential Results
+
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+Drugusersfish <- fisher.test(table1)
+Drugusersfish
+```
 
 
 
-## Inferential Results
+```{r}
+effect <- Drugusersfish$p.value/(Drugusersfish$p.value +1)
+effectivenessdrug = Drugusersfish$estimate/(Drugusersfish$estimate+1)
+print(effectivenessdrug*100)
+```
+
+```{r}
+low=(Drugusersfish$conf.int[1]/(Drugusersfish$conf.int[1] +1))*100
+hi=(Drugusersfish$conf.int[2]/(Drugusersfish$conf.int[2] +1))*100
+options
+(digits = 2)
+```
+
+```{r}
+Drugusersfish <- fisher.test(table1)
+Drugusersfish
+```
+
+## Effectiveness Confidence Interval `r low` to `r hi`
 
 
 
-# Discussion and Conclusion  
+# Discussion and Conclusion 
+
+
