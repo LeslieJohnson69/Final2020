@@ -59,6 +59,7 @@ basicC <- ggplot(dd2,aes(x=infected,y=prcnt*100,fill=treatment))
 basicC + geom_bar(stat = "identity",position = "dodge")
 ```
 
+This barplot shows that around 57% took the vaccine and still contracted COVID-19, while 43% took the placebo and contracted COVID-19. The vaccine seems to be ineffective.
 
 ### Numerical results
 
@@ -79,11 +80,17 @@ guysfish <- fisher.test(table1)
 guysfish
 ```
 
+The Fisher's Exact test says the p_value above is too small at 6e-04, so we can be rejected in favor of the alternative. 
+
+The null hypothesis predicted that the deaths related to COVID-19 are independent of sex, and it is evident that sex does not play a role in the deaths of people.
+
 ```{r}
 effect <- guysfish$p.value/(guysfish$p.value +1)
-effectivenessguy = guysfish$estimate/(guysfish$estimate+1)
-print(effectivenessguy*100)
+effectivenessguy = guysfish$estimate/(guysfish$estimate+1)*100
+print(effectivenessguy)
 ```
+
+This shows us the effect odds ratio is 40.4
 
 ```{r}
 low=(guysfish$conf.int[1]/(guysfish$conf.int[1] +1))*100
@@ -121,6 +128,8 @@ basicC + geom_bar(stat = "identity",position = "dodge")
 
 ```
 
+This plot shows us the population of gals by taking the COVID-19 vaccine compared to those who will take the placebo. 
+
 ### Numerical Results
 
 ```{r}
@@ -130,6 +139,7 @@ rowPerc(table1)
 colPerc(table1)
 ```
 
+This shows specific percentages of gals that contracted COVID-19 after taking the placebo, and the vaccine. 33% of the gals who took the vaccine still got COVID-19 compared to the 66% of gals who took the placebo and still contracted COVID-19.  
 
 ## Inferential  
 
@@ -140,12 +150,15 @@ galsfish <- fisher.test(table1)
 galsfish
 ```
 
+The p_value is so low around 0.002 so the results are not likely it to occur  so the null hypothesis can be rejected.  
 
 ```{r}
 effect <- galsfish$p.value/(galsfish$p.value +1)
-effectivenessgal = galsfish$estimate/(galsfish$estimate+1)
-print(effectivenessgal*100)
+effectivenessgal = galsfish$estimate/(galsfish$estimate+1)*100
+print(effectivenessgal)
 ```
+
+The effects odds shown above gives us approximately around 67%.  
 
 ```{r}
 low=(galsfish$conf.int[1]/(galsfish$conf.int[1] +1))*100
@@ -183,6 +196,7 @@ basicC + geom_bar(stat = "identity",position = "dodge")
 
 ```
 
+This barplot shows the population of gays of those who contracted COVID-19 by either taking the vaccine oppose to those who took the placebo.
 
 ### Numerical Results
 
@@ -193,6 +207,7 @@ rowPerc(table1)
 colPerc(table1)
 ```
 
+The gays that took the vaccine and contracted COVID-19 was around 71% compared to the 29% who only took the placebo and contracted COVID-19. So the ones who took the vaccine were 3 times likely to get COVID-19 than ones that took the placebo.
 
 ### Inferential Results
 
@@ -204,10 +219,12 @@ gaysfish
 ```
 
 
+
+
 ```{r}
 effect <- gaysfish$p.value/(gaysfish$p.value +1)
-effectivenessgay = gaysfish$estimate/(gaysfish$estimate+1)
-print(effectivenessgay*100)
+effectivenessgay = gaysfish$estimate/(gaysfish$estimate+1)*100
+print(effectivenessgay)
 ```
 
 ```{r}
@@ -221,6 +238,7 @@ options
 gaysfish <- fisher.test(table1)
 gaysfish
 ```
+
 
 ## Effectiveness Confidence Interval `r low` to `r hi`
 
@@ -246,6 +264,7 @@ basicC + geom_bar(stat = "identity",position = "dodge")
 
 ```
 
+This barplot represents the population of Drugusers from either taking the vaccine or the placebo. 
 
 ### Numerical Results
 
@@ -256,6 +275,9 @@ rowPerc(table1)
 colPerc(table1)
 ```
 
+This shows that 34% who took the vaccine contracted COVID-19 compared to 66% who took the placebo and contracted COVID-19. Which makes the Drugusers half as likely to get COVID-19.     
+
+
 ### Inferential Results
 
 ```{r}
@@ -265,12 +287,12 @@ Drugusersfish <- fisher.test(table1)
 Drugusersfish
 ```
 
-
+The p_value is a small number at 0.002 so it won't likely occur by chance. The drug is effective so the null hypothesis is rejected.
 
 ```{r}
 effect <- Drugusersfish$p.value/(Drugusersfish$p.value +1)
-effectivenessdrug = Drugusersfish$estimate/(Drugusersfish$estimate+1)
-print(effectivenessdrug*100)
+effectivenessdrug = Drugusersfish$estimate/(Drugusersfish$estimate+1)*100
+print(effectivenessdrug)
 ```
 
 ```{r}
@@ -291,4 +313,4 @@ Drugusersfish
 
 # Discussion and Conclusion 
 
-
+The COVID-19 vaccine was not effective in protecting guys against contracting the disease opposed to protecting gals. COVID-19 was successful in protecting gals. If you are a guy or identify as gay it is not recommended to take the vaccine, but you are a gal or druguser the vaccine was reported to be effective.
